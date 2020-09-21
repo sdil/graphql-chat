@@ -1,11 +1,8 @@
 query fetchMessages {
-  user {
-    username
-    updated_at
+  message {
     id
-    messages {
-      message
-      sent_at
-    }
+    message
+    sent_at
+    sent_by
   }
 }

@@ -1,0 +1,11 @@
+query fetchUser {
+  user {
+    username
+    updated_at
+    id
+    messages {
+      message
+      sent_at
+    }
+  }
+}

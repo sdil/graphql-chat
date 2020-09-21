@@ -60,8 +60,9 @@ export default {
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint: 'http://localhost:8080/v1/graphql'
-      }
+        httpEndpoint: 'http://localhost:8080/v1/graphql',
+        wsEndpoint: 'ws://localhost:8080/v1/graphql'
+      },
     }
   },
   /*

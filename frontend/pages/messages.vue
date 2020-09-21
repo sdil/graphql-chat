@@ -1,22 +1,75 @@
 <template>
-    <div>
-        test
-        {{ user[0].username }}
-    </div>
+  <div>
+    messages:
+    <ul id="example-1">
+      <li v-for="m in messages" :key="m.id">{{ m.message }} {{ m.sent_at }}</li>
+    </ul>
+
+    <input type="text" v-model="newMessage" />
+    <input @click="submitNewMessage" type="submit" />
+  </div>
 </template>
 
 <script>
-import messages from "~/apollo/queries/fetchMessages"
+import messages from "~/apollo/queries/fetchMessages";
+import gql from "graphql-tag";
 
 export default {
-    apollo: {
-        user: {
-            prefetch: true,
-            query: messages
-        }
+  data() {
+    return {
+      newMessage: "",
+      messages: []
+    };
+  },
+  methods: {
+    submitNewMessage: function (message) {
+      console.log("message: " + this.newMessage);
+      this.$apollo.mutate({
+        mutation: gql`
+          mutation AddNewMessage($newMessage: String!) {
+            insert_message(
+              objects: {
+                message: $newMessage
+                sent_by: "1074c166-c6f5-40ae-8678-6cdcb89eb182"
+              }
+            ) {
+              returning {
+                id
+                message
+                sent_at
+                sent_by
+              }
+            }
+          }
+        `,
+        // Parameters
+        variables: {
+          newMessage: this.newMessage,
+        },
+      });
     },
-    head: {
-    title: 'Messages'
-  }
-}
+  },
+  apollo: {
+    $subscribe: {
+      messages: {
+        query: gql`
+          subscription MessageSubscription {
+            message {
+              id
+              message
+              sent_at
+              sent_by
+            }
+          }
+        `, result ({data}) {
+            console.log(data)
+            this.messages = data.message
+        }
+      },
+    },
+  },
+  head: {
+    title: "Messages",
+  },
+};
 </script>
