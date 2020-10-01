@@ -30,6 +30,7 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
+    "~/plugins/auth"
   ],
   /*
   ** Auto import components
@@ -67,7 +68,12 @@ export default {
       measurementId: process.env.MEASUREMENT_ID,
     },
     services: {
-      auth: true
+      auth: {
+        initialize: {
+          onAuthStateChangedAction: 'auth/onAuthStateChanged'
+        },
+        ssr: true
+      },
     },
   },
   apollo: {

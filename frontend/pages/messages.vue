@@ -18,7 +18,7 @@ export default {
   data() {
     return {
       newMessage: "",
-      messages: []
+      messages: [],
     };
   },
   methods: {
@@ -27,12 +27,7 @@ export default {
       this.$apollo.mutate({
         mutation: gql`
           mutation AddNewMessage($newMessage: String!) {
-            insert_message(
-              objects: {
-                message: $newMessage
-                sent_by: "1074c166-c6f5-40ae-8678-6cdcb89eb182"
-              }
-            ) {
+            insert_message(objects: { message: $newMessage }) {
               returning {
                 id
                 message
@@ -45,6 +40,9 @@ export default {
         // Parameters
         variables: {
           newMessage: this.newMessage,
+        },
+        context: {
+          headers: { Authorization: "Bearer " + this.$auth.user.jwtToken },
         },
       });
     },
@@ -61,10 +59,14 @@ export default {
               sent_by
             }
           }
-        `, result ({data}) {
-            console.log(data)
-            this.messages = data.message
-        }
+        `,
+        context: {
+          headers: { Authorization: "Bearer " + "test" },
+        },
+        result({ data }) {
+          console.log(data);
+          this.messages = data.message;
+        },
       },
     },
   },
