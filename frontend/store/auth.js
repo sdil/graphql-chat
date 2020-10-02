@@ -14,9 +14,7 @@ export const mutations = {
         state.user = {
             uid: authUser.uid,
             email: authUser.email,
-            displayName: authUser.displayName,
-            jwtToken: authUser.xa,
-            refreshToken: authUser.refreshToken
+            displayName: authUser.displayName
         }
         state.isAuthenticated = true
     }
@@ -58,7 +56,6 @@ export const actions = {
     },
 
     onAuthStateChanged({ commit }, { authUser }) {
-        console.log(authUser)
         if (!authUser) {
             commit('RESET_STORE')
             return
