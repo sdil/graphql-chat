@@ -82,7 +82,7 @@ export default {
         httpEndpoint: process.env.HTTP_ENDPOINT,
         wsEndpoint: process.env.WS_ENDPOINT
       },
-    }
+    },
   },
   /*
   ** Axios module configuration

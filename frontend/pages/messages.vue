@@ -1,7 +1,7 @@
 <template>
   <div>
     messages:
-    <ul id="example-1">
+    <ul>
       <li v-for="m in messages" :key="m.id">{{ m.message }} {{ m.sent_at }}</li>
     </ul>
 
@@ -41,9 +41,6 @@ export default {
         variables: {
           newMessage: this.newMessage,
         },
-        context: {
-          headers: { Authorization: "Bearer " + this.$auth.user.jwtToken },
-        },
       });
     },
   },
@@ -59,14 +56,10 @@ export default {
               sent_by
             }
           }
-        `,
-        context: {
-          headers: { Authorization: "Bearer " + "test" },
-        },
-        result({ data }) {
-          console.log(data);
-          this.messages = data.message;
-        },
+        `, result ({data}) {
+            console.log(data)
+            this.messages = data.message
+        }
       },
     },
   },
