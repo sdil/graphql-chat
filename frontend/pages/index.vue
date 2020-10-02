@@ -1,8 +1,37 @@
 <template>
+  <div class="container mx-auto">
+    <p class="font-sans text-gray-800 text-4xl font-semibold">Rooms</p>
+    <div v-for="r in room" class="bg-gray-400 rounded-lg p-6">
+      <div :key="r.id">
+        <nuxt-link :to="'/chat/' + r.id" class="text-lg">{{r.name}}</nuxt-link>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-export default {};
+import gql from "graphql-tag";
+
+export default {
+  data() {
+    return {
+      room: [],
+    };
+  },
+  apollo: {
+    room: {
+      query: gql`
+        query room {
+          room {
+            description
+            id
+            name
+          }
+        }
+      `,
+    },
+  },
+};
 </script>
 
 <style>
