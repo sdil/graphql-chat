@@ -36,13 +36,14 @@ export default {
           .catch(function (error) {
             console.error("Failed to get firebase idToken" + error);
           });
-
-        // Set the token in the browser cookie
-        await this.$apolloHelpers.onLogin(token, undefined, { expires: 7 });
-
       } catch (e) {
         console.error(e);
       }
+
+      this.$axios.get("http://localhost:8082/get-or-create-user");
+
+      // Set the token in the browser cookie
+      await this.$apolloHelpers.onLogin(token, undefined, { expires: 7 });
     },
     async logout() {
       this.$fireAuth.signOut();
