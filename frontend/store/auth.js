@@ -60,6 +60,9 @@ export const actions = {
             })
 
         }
+        
+        commit('SET_LOADING', false)
+
     },
 
     onAuthStateChanged({ commit }, { authUser }) {

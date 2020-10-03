@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="$auth.loading">Loadingg....</div>
+    <div v-if="$auth.loading">Loading....</div>
 
     <div v-else>
       <div>
