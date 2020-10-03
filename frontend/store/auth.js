@@ -66,12 +66,12 @@ export const actions = {
     },
 
     onAuthStateChanged({ commit }, { authUser }) {
+        commit('SET_LOADING', false)
         if (!authUser) {
             commit('RESET_STORE')
             return
         }
         commit('SET_AUTH_USER', { authUser })
-        commit('SET_LOADING', false)
     },
 
     checkVuexStore(ctx) {
