@@ -1,5 +1,6 @@
 
 export const state = () => ({
+    loading: true,
     isAuthenticated: false,
     user: null
 })
@@ -8,6 +9,7 @@ export const mutations = {
     RESET_STORE: (state) => {
         state.isAuthenticated = false
         state.user = null
+        state.loading = false
     },
 
     SET_AUTH_USER: (state, { authUser }) => {
@@ -17,11 +19,16 @@ export const mutations = {
             displayName: authUser.displayName
         }
         state.isAuthenticated = true
+    },
+
+    SET_LOADING: (state, isLoading) => {
+        state.loading = isLoading
     }
 }
 
 export const actions = {
     async nuxtServerInit({ dispatch }, ctx) {
+        commit('SET_LOADING', true)
         if (this.$fireAuth === null) {
             throw 'nuxtServerInit Example not working - this.$fireAuth cannot be accessed.'
         }
@@ -61,6 +68,7 @@ export const actions = {
             return
         }
         commit('SET_AUTH_USER', { authUser })
+        commit('SET_LOADING', false)
     },
 
     checkVuexStore(ctx) {

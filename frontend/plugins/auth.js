@@ -18,9 +18,8 @@ class AuthService {
         return this.user.email;
     }
 
-    get accessToken() {
-        if (!this.user) return;
-        return this.user.jwtToken;
+    get loading() {
+        return this.$store.state.auth.loading;
     }
 }
 
@@ -28,5 +27,4 @@ export default async ({ store }) => {
     const authService = new AuthService(store);
     Vue.prototype.$auth = authService;
     Vue.$auth = authService;
-    // await store.dispatch('auth/load')
 }

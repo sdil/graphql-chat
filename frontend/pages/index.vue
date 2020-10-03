@@ -1,9 +1,10 @@
 <template>
   <div class="container mx-auto">
     <p class="font-sans text-gray-800 text-4xl font-semibold">Rooms</p>
-    <div v-for="r in room" class="bg-gray-400 rounded-lg p-6">
-      <div :key="r.id">
-        <nuxt-link :to="'/chat/' + r.id" class="text-lg">{{r.name}}</nuxt-link>
+    <div v-for="r in room">
+      <div :key="r.id" class="bg-gray-400 rounded-lg p-6 mb-5">
+        <nuxt-link :to="'/chat/' + r.id" class="text-lg font-bold">{{r.name}}</nuxt-link>
+        <p>{{ r.description }}</p>
       </div>
     </div>
   </div>

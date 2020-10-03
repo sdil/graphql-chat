@@ -53,8 +53,14 @@ export default {
     '@nuxtjs/pwa',
     '@nuxtjs/apollo',
     '@nuxtjs/firebase',
-    '@nuxtjs/dayjs'
+    '@nuxtjs/dayjs',
+    '@nuxtjs/toast'
   ],
+  toast: {
+    theme: "bubble",
+    duration: 5000,
+    position: 'top-center'
+  },
   dayjs: {
     plugins: ['relativeTime'] // Your Day.js plugin
   },
