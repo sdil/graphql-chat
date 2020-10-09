@@ -75,6 +75,7 @@ export default {
       await this.$apolloHelpers.onLogin(token, undefined, { expires: 7 });
 
       this.$toast.success("Successfully authenticated");
+      this.$router.go()
     },
     async logout() {
       this.$fireAuth.signOut();

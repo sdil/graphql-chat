@@ -29,7 +29,7 @@ Learning GraphQL in public. I personally think that I enjoyed writing GraphQL in
 
 ### Frontend
 
-- There're a lot of Nuxt plugins available here
+- There're a lot of useful Nuxt plugins available [here](https://modules.nuxtjs.org/). Please check out each of them.
 - Use [Nuxt Toast](https://github.com/nuxt-community/modules/tree/master/packages/toast) to acknowledge users conveniently.
 - Use [Dayjs](https://github.com/nuxt-community/dayjs-module) (available as Nuxt module) to humanize time (make sure to import `relativeTime` plugin)
 - NuxtJS reads `.env` file automatically. If you have a different file name for your dotenv, you'll need to explicitly configure the `nuxt.config.js`
