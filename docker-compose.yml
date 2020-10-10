@@ -32,5 +32,13 @@ services:
       ## Set a secure admin secret
       HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
       HASURA_GRAPHQL_AUTH_HOOK: http://hasura-firebase-auth-webhook:8081/auth
+    api-server:
+      image: ghcr.io/sdil/chat-api:latest
+      restart: always
+      ports:
+      - "8082:8082"
+      volumes:
+      - ./service-account.json:/root/service-account.json
+
 volumes:
   db_data:

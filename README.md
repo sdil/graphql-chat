@@ -10,7 +10,7 @@ This project is built in Jamstack architecture. The frontend application is buil
 - Firebase for authentication & social login
 - Hasura GraphQL engine for data query & manipulation in GraphQL
 - [Hasura Firebase Auth Webhook](https://github.com/sdil/hasura-firebase-auth-webhook) for Hasura to validate JWT token from frontend
-- [API Server](https://github.com/sdil/graphql-chat/tree/master/api-server) for custom logics in REST API
+- [API Server](https://github.com/sdil/graphql-chat/tree/master/api-server) for custom logics in REST API built using FastAPI
 - NuxtJS for frontend
 - Docker-compose (non-production deployment)
 
