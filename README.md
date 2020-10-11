@@ -18,8 +18,10 @@ This project is built in Jamstack architecture. The frontend application is buil
 
 - [Objective](#objective)
 - [Key Takeaway](#key-takeaway)
-    - [Frontend](#frontend)
-    - [Hasura](#hasura)
+  - [Frontend](#frontend)
+  - [Hasura](#hasura)
+  - [API Server](#api-server)
+- [TODO](#todo)
 
 ## Objective
 
@@ -33,11 +35,24 @@ Learning GraphQL in public. I personally think that I enjoyed writing GraphQL in
 - Use [Nuxt Toast](https://github.com/nuxt-community/modules/tree/master/packages/toast) to acknowledge users conveniently.
 - Use [Dayjs](https://github.com/nuxt-community/dayjs-module) (available as Nuxt module) to humanize time (make sure to import `relativeTime` plugin)
 - NuxtJS reads `.env` file automatically. If you have a different file name for your dotenv, you'll need to explicitly configure the `nuxt.config.js`
-- [Apollo] Apollo will store user token named `apollo-token` in the browser cookie and will use it to request to GraphQL endpoints
-- [Apollo] Apollo by default will set `authorization` HTTP header instead of `Authorization` header to GraphQL endpoint.
-- [Apollo] When you need to query GraphQL with variable reactively, you'll need to do it like [this](https://vue-apollo.netlify.app/guide/apollo/queries.html#reactive-parameters) instead of the normal query.
-- [Firebase]
+- In NuxtJS/VueJS, use `this.$router.go()` to refresh the whole page. This is useful after user login & require a full page & components reload.
+- **[Apollo]** Apollo will store user token named `apollo-token` in the browser cookie and will use it to request to GraphQL endpoints
+- **[Apollo]** Apollo by default will set `authorization` HTTP header instead of `Authorization` header to GraphQL endpoint.
+- **[Apollo]** When you need to query GraphQL with variable reactively, you'll need to do it [this](https://vue-apollo.netlify.app/guide/apollo/queries.html#reactive-parameters) way instead of the normal query.
+- **[Firebase]**
 
 ### Hasura
 
 - Remember to add and version control the DB migration
+
+### API Server
+
+- **[FastAPI]** FastAPI documentation is not comprehensive. Some of the things (eg reading request Auth header) are not documented in the official doc.
+- The maintainer created an excellent base Docker image `tiangolo/uvicorn-gunicorn-fastapi:xxxx` to be used with FastAPI implementation
+
+## TODO
+
+- Write Python & Go unittests
+- Use Sentry to track errors
+- Use Google Analytics to analyze users/visitors
+- Use pubsub (eg. Kafka) to do data lake & data collection
