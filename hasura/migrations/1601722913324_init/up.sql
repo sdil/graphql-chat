@@ -26,7 +26,7 @@ CREATE TABLE public."user" (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    username text NOT NULL
+    name text NOT NULL
 );
 COMMENT ON TABLE public."user" IS 'user details';
 ALTER TABLE ONLY public.message

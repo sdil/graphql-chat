@@ -1,1 +1,90 @@
-[]
+- table:
+    schema: public
+    name: message
+  object_relationships:
+  - name: messagePoster
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: user
+        column_mapping:
+          sent_by: id
+  - name: roomByRoom
+    using:
+      foreign_key_constraint_on: room
+  insert_permissions:
+  - role: user
+    permission:
+      check: {}
+      set:
+        sent_by: x-hasura-User-Id
+      columns:
+      - id
+      - message
+      - room
+      - sent_at
+      - sent_by
+      backend_only: false
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - message
+      - room
+      - sent_at
+      - sent_by
+      filter: {}
+  - role: user
+    permission:
+      columns:
+      - id
+      - message
+      - room
+      - sent_at
+      - sent_by
+      filter: {}
+- table:
+    schema: public
+    name: room
+  insert_permissions:
+  - role: user
+    permission:
+      check: {}
+      columns:
+      - description
+      - name
+      - id
+      backend_only: false
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - name
+      - description
+      filter: {}
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+      - description
+      - name
+      - id
+      filter: {}
+      allow_aggregations: true
+- table:
+    schema: public
+    name: user
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - name
+      filter: {}
+  - role: user
+    permission:
+      columns:
+      - name
+      filter: {}
