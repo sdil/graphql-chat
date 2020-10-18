@@ -1,38 +1,57 @@
-from sgqlc.endpoint.http import HTTPEndpoint
+import os
 
-url = 'http://server.com/graphql'
-headers = {'Authorization': 'bearer TOKEN'}
+from gql import AIOHTTPTransport, Client, gql
 
-variables = {'varName': 'value'}
+transport = AIOHTTPTransport(
+    os.environ.get("GRAPHQL_SERVER"),
+    headers={
+        "X-Hasura-Admin-Secret": f'{os.environ.get("HASURA_GRAPHQL_ADMIN_SECRET")}'
+    },
+)
 
-endpoint = HTTPEndpoint(url, headers, timeout=1)
+client = Client(transport=transport, fetch_schema_from_transport=True)
 
-def get_user(uuid) -> bool:
+
+def get_user(uuid: str):
     """
     Get the user info from Hasura
     """
-    query = """
-    query user (uuid = $uuid) {
-        uuid
-    }
+    query = gql(
+        """
+        query GetUser ($uid: String!) {
+            user(where: {id: {_eq: $uid}}) {
+                id
+                name
+            }
+        }
     """
-    if endpoint(query, variables):
-        return True
+    )
 
-    return False
+    params = {"uid": uuid}
+    result = client.execute(query, variable_values=params)["user"]
+    
+    if len(result) == 0:
+        # If no user match, return False so that it creates new user
+        return False
+    
+    return result[0]
 
 
-def create_user(user) -> bool:
+def create_user(user):
     """
     Creates new user in Hasura
     """
 
-    query = """
-    mutate user (uuid = $uuid) {
-        uuid
-    }
+    query = gql(
+        """
+        mutation InsertNewUser($id: String!, $name: String!) {
+            insert_user_one(object: {id: $id, name: $name}) {
+                id
+                name
+            }
+        }
     """
-    if endpoint(query, variables):
-        return True
+    )
 
-    return False
+    params = {"id": user["localId"], "name": user["displayName"]}
+    return client.execute(query, variable_values=params)

@@ -39,11 +39,15 @@ Learning GraphQL in public. I personally think that I enjoyed writing GraphQL in
 - **[Apollo]** Apollo will store user token named `apollo-token` in the browser cookie and will use it to request to GraphQL endpoints
 - **[Apollo]** Apollo by default will set `authorization` HTTP header instead of `Authorization` header to GraphQL endpoint.
 - **[Apollo]** When you need to query GraphQL with variable reactively, you'll need to do it [this](https://vue-apollo.netlify.app/guide/apollo/queries.html#reactive-parameters) way instead of the normal query.
+- Eventhough Vue Apollo & Hasura supports websocket out of the box and really easy to setup, please avoid using ws connection whenever possible because the browser adoption is still not great today.
 - **[Firebase]**
 
 ### Hasura
 
 - Remember to add and version control the DB migration
+- You'll need a PostgreSQL view to query for aggregation (eg. get number of messages by room, get number of messages by user)
+- You'll need PostgreSQL custom function to do special things in Hasura
+- You'll need to utilize PostgreSQL advantages when using Hasura to extend it
 
 ### API Server
 

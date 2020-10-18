@@ -98,11 +98,17 @@ export default {
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
-  axios: {},
+  axios: {
+    common: {
+      'Accept': 'application/json'
+    },
+  },
   /*
   ** Build configuration
   ** See https://nuxtjs.org/api/configuration-build/
   */
   build: {
-  }
+  },
+  // https://nuxtjs.org/examples/custom-loading/
+  // loading: ''
 }

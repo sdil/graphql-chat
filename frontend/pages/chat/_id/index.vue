@@ -15,7 +15,7 @@
         <p v-for="m in messages" :key="m.id">
           <span class="ml-2">{{ m.message }}</span>
           <span class="float-right font-semibold text-teal-700 text-opacity-50"
-            >{{ m.sent_by }} {{ $dayjs(m.sent_at).fromNow() }}
+            >{{ m.messagePoster.name }} {{ $dayjs(m.sent_at).fromNow() }}
           </span>
         </p>
       </div>
@@ -35,7 +35,7 @@
             class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="submit"
             value="Send"
-          >
+          />
         </div>
       </form>
       <div
@@ -87,9 +87,11 @@ export default {
         query: gql`
           subscription MessageSubscription($room: uuid!) {
             message(where: { room: { _eq: $room } }) {
-              message
-              sent_at
-              sent_by
+                messagePoster {
+                  name
+                }
+                message
+                sent_at
             }
           }
         `,

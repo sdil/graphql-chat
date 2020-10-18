@@ -16,9 +16,7 @@
         </div>
         <div>
           <div v-if="$auth.isAuthenticated">
-            {{
-              $auth.user.displayName
-            }}
+            {{ $auth.user.displayName }}
             <button
               class="bg-teal-700 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
               @click="logout"
@@ -51,9 +49,9 @@ export default {
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope("profile");
       provider.addScope("email");
-      try {
-        var token;
+      var token;
 
+      try {
         await this.$fireAuth.signInWithPopup(provider);
 
         // Get the current user idToken
@@ -69,13 +67,18 @@ export default {
         console.error(e);
       }
 
-      this.$axios.get("http://localhost:8082/get-or-create-user");
+      this.$axios.setToken(token, "Bearer");
+      await this.$axios
+        .get("http://localhost:8082/get-or-create-user")
+        .then(function (result) {
+          console.log(result);
+        });
 
       // Set the token in the browser cookie
       await this.$apolloHelpers.onLogin(token, undefined, { expires: 7 });
 
       this.$toast.success("Successfully authenticated");
-      this.$router.go()
+      this.$router.go();
     },
     async logout() {
       this.$fireAuth.signOut();

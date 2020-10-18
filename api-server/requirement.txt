@@ -1,2 +1,2 @@
 pyrebase
-sgqlc
+gql==3.0.0a3
