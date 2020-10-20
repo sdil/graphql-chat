@@ -40,6 +40,7 @@ Learning GraphQL in public. I personally think that I enjoyed writing GraphQL in
 - **[Apollo]** Apollo by default will set `authorization` HTTP header instead of `Authorization` header to GraphQL endpoint.
 - **[Apollo]** When you need to query GraphQL with variable reactively, you'll need to do it [this](https://vue-apollo.netlify.app/guide/apollo/queries.html#reactive-parameters) way instead of the normal query.
 - Eventhough Vue Apollo & Hasura supports websocket out of the box and really easy to setup, please avoid using ws connection whenever possible because the browser adoption is still not great today.
+- Contents on websocket also cannot be rendered during build times, which means it cannot be indexed by search engines (bad for SEO).
 - **[Firebase]**
 
 ### Hasura
