@@ -42,6 +42,7 @@ Learning GraphQL in public. I personally think that I enjoyed writing GraphQL in
 - Eventhough Vue Apollo & Hasura supports websocket out of the box and really easy to setup, please avoid using ws connection whenever possible because the browser adoption is still not great today.
 - Contents on websocket also cannot be rendered during build times, which means it cannot be indexed by search engines (bad for SEO).
 - **[Firebase]**
+- [Tailwind] use [tailwindcomponents.com](https://tailwindcomponents.com/) to easily create components in Tailwind
 
 ### Hasura
 

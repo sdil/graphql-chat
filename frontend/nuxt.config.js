@@ -54,8 +54,12 @@ export default {
     '@nuxtjs/apollo',
     '@nuxtjs/firebase',
     '@nuxtjs/dayjs',
-    '@nuxtjs/toast'
+    '@nuxtjs/toast',
+    'nuxt-stripe-module', 
   ],
+  stripe: {
+    publishableKey: process.env.STRIPE_KEY,
+  },
   toast: {
     theme: "bubble",
     duration: 5000,
