@@ -122,42 +122,57 @@
 
     <div v-else-if="step == 1">
       <div
-        class="container flex flex-wrap pt-4 pb-10 m-auto mt-6 md:mt-15 lg:px-12 xl:px-16 rounded-t-lg bg-teal-600"
+        class="container flex flex-wrap pt-4 pb-10 m-auto mt-6 md:mt-15 lg:px-12 xl:px-16"
       >
-        <p
-          class="text-5xl font-bold text-center group-hover:text-white text-white"
+        <form
+          class="w-full max-w-xl m-4 p-10 bg-white rounded shadow-xl"
+          @submit.stop.prevent="handleSubmit"
         >
-          Subscribe to {{ plan }} now!
-        </p>
-
-        <label
-          >Card
-          <div id="card-element"></div>
-        </label>
-        
-        <button
-          class="w-5/6 py-2 mt-2 font-semibold text-center uppercase bg-teal-400 border border-transparent rounded text-white"
-        >
-          Pay Now ${{ price }}
-        </button>
-        <button
-          class="w-5/6 py-2 mt-2 font-semibold text-center uppercase bg-teal-300 border border-transparent rounded text-white"
-          v-on:click="stepBack"
-        >
-          Back
-        </button>
+          <p class="mt-4 text-gray-800 font-semibold">Payment information</p>
+          <div class="">
+            <label class="block text-sm text-gray-600" for="cus_name"
+              >Card</label
+            >
+            <card
+              ref="card-stripe"
+              stripe="pk_test_51HdoRrAWdm4F9r8C48eCqf3H5ggmnaNM8dLapbRdbgoJ9HpLyksUbGQPrLZF9KJ9gGPuVI2OBChNkteup4BNLRRC005OO5RElL"
+              @change="complete = $event.complete"
+            />
+          </div>
+          <div class="mt-4">
+            <button
+              class="px-4 py-1 text-white font-light tracking-wider bg-gray-900 rounded"
+              type="submit"
+            >
+              Pay ${{ price }}
+            </button>
+            <button
+              class="px-4 py-1 text-white font-light tracking-wider bg-red-900 rounded"
+              v-on:click="stepBack"
+            >
+              Back
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { Card, handleCardPayment } from "vue-stripe-elements-plus";
+
 export default {
+  components: {
+    Card,
+  },
+
   data() {
     return {
       step: 0,
       price: 0,
       plan: "",
+      loading: false,
     };
   },
   methods: {
@@ -169,11 +184,32 @@ export default {
     stepBack: function () {
       this.step = 0;
     },
-    mounted() {
-      const elements = this.$stripe.import().elements();
-      const card = elements.create("card", {});
-      // Add an instance of the card Element into the `card-element` <div>
-      card.mount("#card-element");
+    handleSubmit() {
+      this.loading = true;
+      handleCardPayment(
+        "pi_1HehYcAWdm4F9r8CbwzyYLlA_secret_ao9IYxwExQiysCMFWwFpgdJWI",
+        { receipt_email: "piukul@yahoo.com.my" }
+      ).then((result) => {
+        console.log(result);
+        this.loading = false;
+        if (result.error) {
+          // show the error to the customer, let them try to pay again
+          this.error = result.error.message;
+          setTimeout(() => (this.error = ""), 3000);
+        } else if (
+          result.paymentIntent &&
+          result.paymentIntent.status === "succeeded"
+        ) {
+          // payment succeeded! show a success message
+          // there's always a chance your customer closes the browser after the payment process and before this code runs so
+          // we will use the webhook in handle-payment-succeeded for any business-critical post-payment actions
+          this.$store.commit("updateCartUI", "success");
+          setTimeout(this.clearCart, 5000);
+        } else {
+          this.error = "Some unknown error occured";
+          setTimeout(() => (this.error = ""), 3000);
+        }
+      });
     },
   },
 };

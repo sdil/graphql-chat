@@ -18,6 +18,11 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    ],
+    script: [
+      { src: 'https://js.stripe.com/v3' },
+      { src: 'https://cdnjs.com/libraries/bodymovin' },
+      { src: 'https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.3/lottie.min.js' }
     ]
   },
   /*
@@ -55,11 +60,7 @@ export default {
     '@nuxtjs/firebase',
     '@nuxtjs/dayjs',
     '@nuxtjs/toast',
-    'nuxt-stripe-module', 
   ],
-  stripe: {
-    publishableKey: process.env.STRIPE_KEY,
-  },
   toast: {
     theme: "bubble",
     duration: 5000,
@@ -114,5 +115,5 @@ export default {
   build: {
   },
   // https://nuxtjs.org/examples/custom-loading/
-  // loading: ''
+  loading: "~/components/loading.vue"
 }
