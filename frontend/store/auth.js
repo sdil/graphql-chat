@@ -86,7 +86,6 @@ export const actions = {
                     token = result.token;
                     expires = ((Date.parse(result.expirationTime)) - Math.floor(new Date().getTime())) / 1000
                     console.log(`Token expires in ${expires} seconds`)
-                    console.log(`Token expires in ${result.expirationTime} seconds`)
                 })
                 .catch(function (error) {
                     console.error("Failed to get firebase idToken" + error);

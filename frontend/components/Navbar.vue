@@ -62,17 +62,12 @@ export default {
         await this.$fireAuth.signInWithPopup(provider);
 
         // Get the current user idToken
-        await this.$store.dispatch('auth/fetchUser')
-        
+        await this.$store.dispatch("auth/fetchUser");
       } catch (e) {
         console.error(e);
       }
 
-      await this.$axios
-        .get("http://localhost:8082/get-or-create-user")
-        .then(function (result) {
-          console.log(result);
-        });
+      await this.$axios.get("http://localhost:8082/get-or-create-user");
 
       this.$toast.success("Successfully authenticated");
       this.$router.go();

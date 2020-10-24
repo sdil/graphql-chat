@@ -1,7 +1,6 @@
 <template>
   <div v-if="loading" class="loading-page">
-    asdfasdfasdf
-    <div id="bm"></div>
+    Loading...
   </div>
 </template>
 
@@ -17,14 +16,6 @@ export default {
     finish() {
       this.loading = false;
     },
-  },
-  mounted() {
-    var animation = bodymovin.loadAnimation({
-      container: document.getElementById("bm"), // Required
-      path: "/loader-lottie.json", // Required
-      renderer: "svg",
-      name: "Hello World", // Name for future reference. Optional.
-    });
   },
 };
 </script>

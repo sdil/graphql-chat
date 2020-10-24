@@ -1,12 +1,7 @@
 <template>
   <div>
-    <div v-if="$auth.loading" class="loading-page">
-      <p>Loading...</p>
-    </div>
-    <div v-else>
-      <Navbar />
-      <Nuxt />
-    </div>
+    <Navbar />
+    <Nuxt />
   </div>
 </template>
 
