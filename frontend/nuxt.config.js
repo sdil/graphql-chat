@@ -26,6 +26,10 @@ export default {
       }
     ]
   },
+  // https://nuxtjs.org/api/configuration-generate/#fallback
+  generate: {
+    fallback: true
+  },
   /*
   ** Global CSS
   */
