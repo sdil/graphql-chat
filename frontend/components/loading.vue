@@ -1,5 +1,6 @@
 <template>
   <div v-if="loading" class="loading-page">
+    asdfasdfasdf
     <div id="bm"></div>
   </div>
 </template>

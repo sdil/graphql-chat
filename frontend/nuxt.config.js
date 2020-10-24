@@ -21,8 +21,9 @@ export default {
     ],
     script: [
       { src: 'https://js.stripe.com/v3' },
-      { src: 'https://cdnjs.com/libraries/bodymovin' },
-      { src: 'https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.3/lottie.min.js' }
+      {
+        src: 'https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.3/lottie.min.js'
+      }
     ]
   },
   /*

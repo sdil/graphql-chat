@@ -60,18 +60,57 @@ export const actions = {
             })
 
         }
-        
+
         commit('SET_LOADING', false)
 
     },
 
-    onAuthStateChanged({ commit }, { authUser }) {
-        commit('SET_LOADING', false)
+    onAuthStateChanged({ commit, dispatch }, { authUser }) {
         if (!authUser) {
             commit('RESET_STORE')
+            commit('SET_LOADING', false)
             return
         }
-        commit('SET_AUTH_USER', { authUser })
+        dispatch("fetchUser")
+
+    },
+
+    async fetchUser({ commit, dispatch }) {
+
+        try {
+            var authUser = this.$fireAuth.currentUser
+            var token
+            var expires
+            await this.$fireAuth.currentUser.getIdTokenResult(true)
+                .then(function (result) {
+                    token = result.token;
+                    expires = ((Date.parse(result.expirationTime)) - Math.floor(new Date().getTime())) / 1000
+                    console.log(`Token expires in ${expires} seconds`)
+                    console.log(`Token expires in ${result.expirationTime} seconds`)
+                })
+                .catch(function (error) {
+                    console.error("Failed to get firebase idToken" + error);
+                });
+
+            // set axios token
+            await this.$axios.setToken(token, "Bearer");
+
+            // Set the token in the browser cookie
+            await this.$apolloHelpers.onLogin(token, undefined, { expires: 7 });
+
+            await setTimeout(async () => {
+                console.log("Refreshing token")
+                await dispatch('fetchUser')
+            }, expires*1000) // timeout time is in milisecond instead of second
+
+            await commit('SET_AUTH_USER', { authUser })
+            await commit('SET_LOADING', false)
+
+        } catch (err) {
+            console.log("no user logged in")
+            commit('RESET_STORE')
+        }
+
     },
 
     checkVuexStore(ctx) {

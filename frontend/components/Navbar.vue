@@ -57,33 +57,22 @@ export default {
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope("profile");
       provider.addScope("email");
-      var token;
 
       try {
         await this.$fireAuth.signInWithPopup(provider);
 
         // Get the current user idToken
-        await this.$fireAuth.currentUser
-          .getIdToken(true)
-          .then(function (idToken) {
-            token = idToken;
-          })
-          .catch(function (error) {
-            console.error("Failed to get firebase idToken" + error);
-          });
+        await this.$store.dispatch('auth/fetchUser')
+        
       } catch (e) {
         console.error(e);
       }
 
-      this.$axios.setToken(token, "Bearer");
       await this.$axios
         .get("http://localhost:8082/get-or-create-user")
         .then(function (result) {
           console.log(result);
         });
-
-      // Set the token in the browser cookie
-      await this.$apolloHelpers.onLogin(token, undefined, { expires: 7 });
 
       this.$toast.success("Successfully authenticated");
       this.$router.go();
