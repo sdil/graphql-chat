@@ -126,10 +126,8 @@ export default {
         },
 
         updateQuery: (previousResult, { subscriptionData }) => {
-          // Here, return the new result from the previous with the new data
-          console.log(previousResult);
-          console.log(subscriptionData.data);
-          console.log(unionBy(previousResult.message, subscriptionData.data.message, 'message'))
+          // Merge the previous result and new subscription data (from WS).
+          // Hasura will send all data (not only new one) when establishing subscription.
           return { message: unionBy(previousResult.message, subscriptionData.data.message, 'message') };
         },
       },
