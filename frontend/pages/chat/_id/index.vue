@@ -12,7 +12,7 @@
 
     <div id="chat">
       <div class="scrolling-touch overflow-auto">
-        <p v-for="m in messages" :key="m.id">
+        <p v-for="m in message" :key="m.id">
           <span class="ml-2">{{ m.message }}</span>
           <span class="float-right font-semibold text-teal-700 text-opacity-50"
             >{{ m.messagePoster.name }} {{ $dayjs(m.sent_at).fromNow() }}
@@ -50,12 +50,12 @@
 
 <script>
 import gql from "graphql-tag";
+import unionBy from "lodash.unionby";
 
 export default {
   data() {
     return {
       newMessage: "",
-      messages: [],
     };
   },
   methods: {
@@ -82,16 +82,37 @@ export default {
     },
   },
   apollo: {
-    $subscribe: {
-      messages: {
-        query: gql`
+    message: {
+      query: gql`
+        query Messages($room: uuid!) {
+          message(where: { room: { _eq: $room } }) {
+            messagePoster {
+              name
+            }
+            id
+            sent_at
+            message
+          }
+        }
+      `,
+      variables() {
+        // This works just like regular queries
+        // and will re-subscribe with the right variables
+        // each time the values change
+        return {
+          room: this.$route.params.id,
+        };
+      },
+      subscribeToMore: {
+        document: gql`
           subscription MessageSubscription($room: uuid!) {
             message(where: { room: { _eq: $room } }) {
-                messagePoster {
-                  name
-                }
-                message
-                sent_at
+              messagePoster {
+                name
+              }
+              id
+              message
+              sent_at
             }
           }
         `,
@@ -104,8 +125,12 @@ export default {
           };
         },
 
-        result({ data }) {
-          this.messages = data.message;
+        updateQuery: (previousResult, { subscriptionData }) => {
+          // Here, return the new result from the previous with the new data
+          console.log(previousResult);
+          console.log(subscriptionData.data);
+          console.log(unionBy(previousResult.message, subscriptionData.data.message, 'message'))
+          return { message: unionBy(previousResult.message, subscriptionData.data.message, 'message') };
         },
       },
     },
