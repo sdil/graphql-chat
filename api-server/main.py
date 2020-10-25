@@ -6,12 +6,11 @@ import pyrebase
 from fastapi import FastAPI, Security
 from fastapi.logger import logger
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.responses import JSONResponse
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from hasura_user_helper import create_user, get_user
-
-import logging
+from hasura_user_helper import create_hasura_user, get_hasura_user
+from stripe_helper import create_stripe_customer
 
 # Configure the root log level and ensure all logs are sent to Gunicorn's error log.
 gunicorn_error_logger = logging.getLogger("gunicorn.error")
@@ -40,7 +39,7 @@ app.add_middleware(
 
 # Firebase setup
 config = {
-    "apiKey": os.environ.get("API_KEY"),
+    "apiKey": os.environ.get("FIREBASE_API_KEY"),
     "authDomain": "",
     "databaseURL": "",
     "storageBucket": "",
@@ -72,6 +71,7 @@ def get_or_create_user(credentials: HTTPAuthorizationCredentials = Security(secu
     try:
         firebase_user = auth.get_account_info(token)["users"][0]
     except Exception as e:
+        logger.info(f"Failed to connect to Firebase server. Error msg: {e}")
         return JSONResponse(
             {"message": f"Invalid authentication credentials", "error": str(e)}
         )
@@ -82,15 +82,41 @@ def get_or_create_user(credentials: HTTPAuthorizationCredentials = Security(secu
     # If the user already exists, do nothing.
     # This is an idempotent operation.
     try:
-        db_user = get_user(firebase_user["localId"])
+        hasura_user = get_hasura_user(firebase_user["localId"])
     except urllib.error.URLError:
+        logger.info(f"Failed to connect to Hasura")
         return JSONResponse({"message": f"Failed to connect to Chat auth server"})
 
-    if not db_user:
-        logger.info(create_user(firebase_user))
-        logger.info(f"User '{firebase_user['displayName']}' is created")
-        return JSONResponse({"message": f"New user '{firebase_user}' is created"})
+    if not hasura_user:
+        try:
+            create_hasura_user(firebase_user)
+            logger.info(f"Hasura user '{firebase_user['displayName']}' is created")
+            create_stripe_customer(
+                firebase_user["localId"],
+                firebase_user["email"],
+                firebase_user["displayName"],
+                {"id": firebase_user["localId"]},
+            )
+            logger.info(f"Stripe customer '{firebase_user['displayName']}' is created")
+            return JSONResponse({"message": f"New user '{firebase_user}' is created"})
 
-    # logger.info(f"User '{user['name']}' is already exists")
-    return JSONResponse({"message": f"User '{firebase_user['displayName']}' is already exists"})
+        except Exception as e:
+            logger.info(f"Failed to create new user '{firebase_user['displayName']}'. Error message: {e}")
+            return JSONResponse({"message": f"Failed to create new user '{firebase_user}'"})
 
+    logger.info(f"User '{user['name']}' is already exists")
+    return JSONResponse(
+        {"message": f"User '{firebase_user['displayName']}' is already exists"}
+    )
+
+
+@app.get("/create-payment-intent")
+def create_payment_intent():
+    """
+    Always calculate the order amount on your server to prevent customers
+    from manipulating the order amount from the client
+    Here we will use a simple json file to represent inventory
+    but you could replace this with a DB lookup
+    """
+    payment_intent = stripe.PaymentIntent.create(amount=2000, currency="usd")
+    return JSONResponse({"clientSecret": payment_intent.client_secret})

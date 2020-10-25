@@ -43,6 +43,7 @@ Learning GraphQL in public. I personally think that I enjoyed writing GraphQL in
 - Contents on websocket also cannot be rendered during build times, which means it cannot be indexed by search engines (bad for SEO).
 - **[Firebase]**
 - [Tailwind] use [tailwindcomponents.com](https://tailwindcomponents.com/) to easily create components in Tailwind
+- [Stripe] This is a [good example](https://codesandbox.io/examples/package/vue-stripe-elements-plus) that shows how to use Stripe in NuxtJS
 
 ### Hasura
 
