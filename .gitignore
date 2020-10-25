@@ -2,3 +2,5 @@ service-account.json
 */service-account.json
 */__pycache__/
 frontend/.env
+api-server/.env
+.env

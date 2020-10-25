@@ -160,7 +160,7 @@
 </template>
 
 <script>
-import { Card, handleCardPayment } from "vue-stripe-elements-plus";
+import { Card, createPaymentMethod } from "vue-stripe-elements-plus";
 
 export default {
   components: {
@@ -185,29 +185,25 @@ export default {
       this.step = 0;
     },
     handleSubmit() {
+      // Create Stripe PaymentMethod
+      // Attach the PaymentMethod ID to the User in Stripe (by invoking API Server)
+
       this.loading = true;
-      handleCardPayment(
-        "pi_1HehYcAWdm4F9r8CbwzyYLlA_secret_ao9IYxwExQiysCMFWwFpgdJWI",
-        { receipt_email: "piukul@yahoo.com.my" }
-      ).then((result) => {
+      createPaymentMethod('card').then((result) => {
         console.log(result);
         this.loading = false;
+
         if (result.error) {
-          // show the error to the customer, let them try to pay again
-          this.error = result.error.message;
+          console.log(result.error);
+          this.$toast.error("Payment failed. Please try again");
           setTimeout(() => (this.error = ""), 3000);
-        } else if (
-          result.paymentIntent &&
-          result.paymentIntent.status === "succeeded"
-        ) {
+        }  else {
+          this.$axios.post("/subscribe", {payment_method_id: result.paymentMethod.id, plan: this.plan});
+          this.$toast.success("Payment succeed");
           // payment succeeded! show a success message
           // there's always a chance your customer closes the browser after the payment process and before this code runs so
           // we will use the webhook in handle-payment-succeeded for any business-critical post-payment actions
-          this.$store.commit("updateCartUI", "success");
-          setTimeout(this.clearCart, 5000);
-        } else {
-          this.error = "Some unknown error occured";
-          setTimeout(() => (this.error = ""), 3000);
+          this.$router.push("/");
         }
       });
     },

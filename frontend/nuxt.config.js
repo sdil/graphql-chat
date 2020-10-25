@@ -109,6 +109,7 @@ export default {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
+    baseURL: process.env.API_SERVER_URL,
     common: {
       'Accept': 'application/json'
     },

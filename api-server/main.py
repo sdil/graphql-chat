@@ -6,12 +6,17 @@ import pyrebase
 from fastapi import FastAPI, Security
 from fastapi.logger import logger
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.responses import JSONResponse
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from pydantic import BaseModel
 
-from hasura_user_helper import create_user, get_user
-
-import logging
+from hasura_user_helper import create_hasura_user, get_hasura_user
+from stripe_helper import (
+    attach_payment_method_to_customer,
+    create_stripe_customer,
+    create_subscription,
+    set_default_payment_method,
+)
 
 # Configure the root log level and ensure all logs are sent to Gunicorn's error log.
 gunicorn_error_logger = logging.getLogger("gunicorn.error")
@@ -40,7 +45,7 @@ app.add_middleware(
 
 # Firebase setup
 config = {
-    "apiKey": os.environ.get("API_KEY"),
+    "apiKey": os.environ.get("FIREBASE_API_KEY"),
     "authDomain": "",
     "databaseURL": "",
     "storageBucket": "",
@@ -72,6 +77,7 @@ def get_or_create_user(credentials: HTTPAuthorizationCredentials = Security(secu
     try:
         firebase_user = auth.get_account_info(token)["users"][0]
     except Exception as e:
+        logger.info(f"Failed to connect to Firebase server. Error msg: {e}")
         return JSONResponse(
             {"message": f"Invalid authentication credentials", "error": str(e)}
         )
@@ -82,15 +88,70 @@ def get_or_create_user(credentials: HTTPAuthorizationCredentials = Security(secu
     # If the user already exists, do nothing.
     # This is an idempotent operation.
     try:
-        db_user = get_user(firebase_user["localId"])
+        hasura_user = get_hasura_user(firebase_user["localId"])
     except urllib.error.URLError:
+        logger.info(f"Failed to connect to Hasura")
         return JSONResponse({"message": f"Failed to connect to Chat auth server"})
 
-    if not db_user:
-        logger.info(create_user(firebase_user))
-        logger.info(f"User '{firebase_user['displayName']}' is created")
-        return JSONResponse({"message": f"New user '{firebase_user}' is created"})
+    if not hasura_user:
+        try:
+            create_hasura_user(firebase_user)
+            logger.info(f"Hasura user '{firebase_user['displayName']}' is created")
+            create_stripe_customer(
+                firebase_user["localId"],
+                firebase_user["email"],
+                firebase_user["displayName"],
+                {"id": firebase_user["localId"]},
+            )
+            logger.info(f"Stripe customer '{firebase_user['displayName']}' is created")
+            return JSONResponse({"message": f"New user '{firebase_user}' is created"})
 
-    # logger.info(f"User '{user['name']}' is already exists")
-    return JSONResponse({"message": f"User '{firebase_user['displayName']}' is already exists"})
+        except Exception as e:
+            logger.info(
+                f"Failed to create new user '{firebase_user['displayName']}'. Error message: {e}"
+            )
+            return JSONResponse(
+                {"message": f"Failed to create new user '{firebase_user}'"}
+            )
 
+    logger.info(f"User '{firebase_user}' is already exists")
+    return JSONResponse(
+        {"message": f"User '{firebase_user['displayName']}' is already exists"}
+    )
+
+
+class Subscribe(BaseModel):
+    payment_method_id: str
+    plan: str
+
+
+@app.post("/subscribe")
+def subscribe(
+    subscribe: Subscribe, credentials: HTTPAuthorizationCredentials = Security(security)
+):
+    """
+    Attach a new Payment Method to the existing customer (current user)
+    """
+    token = credentials.credentials
+
+    try:
+        firebase_user = auth.get_account_info(token)["users"][0]
+    except Exception as e:
+        logger.info(f"Failed to connect to Firebase server. Error msg: {e}")
+        return JSONResponse(
+            {"message": f"Invalid authentication credentials", "error": str(e)}
+        )
+
+    hasura_user = get_hasura_user(firebase_user["localId"])
+    attach_payment_method_to_customer(
+        hasura_user["stripe_id"], subscribe.payment_method_id
+    )
+    logger.info(f"Attached payment method '{subscribe.payment_method_id}' to the user")
+
+    set_default_payment_method(hasura_user["stripe_id"], subscribe.payment_method_id)
+    logger.info(f"Set the default payment method '{subscribe.payment_method_id}' to the user")
+
+    create_subscription(hasura_user["stripe_id"], subscribe.plan)
+    logger.info(f"Created subscription to the user")
+
+    return JSONResponse({"message": "Attached payment method to the customer"})
