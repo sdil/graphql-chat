@@ -44,6 +44,9 @@ Learning GraphQL in public. I personally think that I enjoyed writing GraphQL in
 - **[Firebase]**
 - [Tailwind] use [tailwindcomponents.com](https://tailwindcomponents.com/) to easily create components in Tailwind
 - [Stripe] This is a [good example](https://codesandbox.io/examples/package/vue-stripe-elements-plus) that shows how to use Stripe in NuxtJS
+- [Stripe] This is a [complete guide](https://stripe.com/docs/billing/subscriptions/
+fixed-price#provision-access) on how to build a billing subscription using Stripe.
+- [Stripe] [This guide](https://stripe.com/docs/billing/subscriptions/overview#integration-example) explains the lifecycle of subscription in Stripe.
 
 ### Hasura
 
