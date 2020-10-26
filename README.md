@@ -13,6 +13,7 @@ This project is built in Jamstack architecture. The frontend application is buil
 - [API Server](https://github.com/sdil/graphql-chat/tree/master/api-server) for custom logics in REST API built using FastAPI
 - NuxtJS for frontend
 - Docker-compose (non-production deployment)
+- Stripe for payment processing
 
 ## Table of Contents
 
@@ -36,12 +37,13 @@ Learning GraphQL in public. I personally think that I enjoyed writing GraphQL in
 - Use [Dayjs](https://github.com/nuxt-community/dayjs-module) (available as Nuxt module) to humanize time (make sure to import `relativeTime` plugin)
 - NuxtJS reads `.env` file automatically. If you have a different file name for your dotenv, you'll need to explicitly configure the `nuxt.config.js`
 - In NuxtJS/VueJS, use `this.$router.go()` to refresh the whole page. This is useful after user login & require a full page & components reload.
-- **[Apollo]** Apollo will store user token named `apollo-token` in the browser cookie and will use it to request to GraphQL endpoints
+- **[Apollo]** Apollo will store the user token named `apollo-token` in the browser cookie and will use it to request to GraphQL endpoints
 - **[Apollo]** Apollo by default will set `authorization` HTTP header instead of `Authorization` header to GraphQL endpoint.
 - **[Apollo]** When you need to query GraphQL with variable reactively, you'll need to do it [this](https://vue-apollo.netlify.app/guide/apollo/queries.html#reactive-parameters) way instead of the normal query.
-- Eventhough Vue Apollo & Hasura supports websocket out of the box and really easy to setup, please avoid using ws connection whenever possible because the browser adoption is still not great today.
-- Contents on websocket also cannot be rendered during build times, which means it cannot be indexed by search engines (bad for SEO).
-- **[Firebase]**
+- Even though Vue Apollo & Hasura supports websocket connection out of the box and really easy to setup, please avoid using WS connection whenever possible because the browser adoption is still not great today.
+- Contents on websocket also can be rendered during build times and then add new results by using `subscribeToMore` function built in Vue-Apollo.
+- Vue-Apollo supports caching mechanism the same way [swr](https://github.com/vercel/swr) works which is really great. It will serve the stale GraphQL query results first and fetch for updates and updates the data. It also can do polling which is suitable for non-critical articles.
+- Server-Side Rendering (SSR) require a NodeJS server to render it and it's suitable to be used with Cloud Run. It provides a non-stale resources rendering because the data are fetched when user requests for it.
 - [Tailwind] use [tailwindcomponents.com](https://tailwindcomponents.com/) to easily create components in Tailwind
 - [Stripe] This is a [good example](https://codesandbox.io/examples/package/vue-stripe-elements-plus) that shows how to use Stripe in NuxtJS
 - [Stripe] This is a [complete guide](https://stripe.com/docs/billing/subscriptions/
@@ -58,11 +60,11 @@ fixed-price#provision-access) on how to build a billing subscription using Strip
 ### API Server
 
 - **[FastAPI]** FastAPI documentation is not comprehensive. Some of the things (eg reading request Auth header) are not documented in the official doc.
-- The maintainer created an excellent base Docker image `tiangolo/uvicorn-gunicorn-fastapi:xxxx` to be used with FastAPI implementation
+- The maintainer created an excellent base Docker image `tiangolo/uvicorn-gunicorn-fastapi:xxxx` to be used with FastAPI implementation.
 
 ## TODO
 
 - Write Python & Go unittests
 - Use Sentry to track errors
 - Use Google Analytics to analyze users/visitors
-- Use pubsub (eg. Kafka) to do data lake & data collection
+- ~~Use pubsub (eg. Kafka) to do data lake & data collection~~

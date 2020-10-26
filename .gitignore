@@ -4,3 +4,4 @@ service-account.json
 frontend/.env
 api-server/.env
 .env
+graphql-chat.code-workspace
