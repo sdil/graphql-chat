@@ -67,7 +67,7 @@ export default {
         console.error(e);
       }
 
-      await this.$axios.get("http://localhost:8082/get-or-create-user");
+      await this.$axios.get("/get-or-create-user");
 
       this.$toast.success("Successfully authenticated");
       this.$router.go();

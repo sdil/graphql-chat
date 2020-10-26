@@ -11,3 +11,7 @@
 graphql.chat.fadhil-blog.dev {
   reverse_proxy localhost:8080
 }
+
+api.chat.fadhil-blog.dev {
+  reverse_proxy localhost:8082
+}

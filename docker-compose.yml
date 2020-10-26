@@ -42,7 +42,7 @@ services:
     ports:
     - "8082:80"
     volumes:
-    - ./service-account.json:/root/service-account.json
+    - ./service-account.json:/app/service-account.json
     env_file:
      - ./.env
     environment:
