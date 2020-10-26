@@ -8,7 +8,6 @@ from fastapi.logger import logger
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-<<<<<<< HEAD
 from pydantic import BaseModel
 
 from hasura_user_helper import create_hasura_user, get_hasura_user
@@ -18,11 +17,6 @@ from stripe_helper import (
     create_subscription,
     set_default_payment_method,
 )
-=======
-
-from hasura_user_helper import create_hasura_user, get_hasura_user
-from stripe_helper import create_stripe_customer
->>>>>>> b32a1952249e9f70294e3ff9a08bb8b2a90e50f5
 
 # Configure the root log level and ensure all logs are sent to Gunicorn's error log.
 gunicorn_error_logger = logging.getLogger("gunicorn.error")
