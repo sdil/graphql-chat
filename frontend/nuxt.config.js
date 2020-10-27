@@ -20,9 +20,9 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ],
     script: [
-      { src: 'https://js.stripe.com/v3' },
+      { src: 'https://js.stripe.com/v3', defer: true },
       {
-        src: 'https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.3/lottie.min.js'
+        src: 'https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.3/lottie.min.js', defer: true
       }
     ]
   },
