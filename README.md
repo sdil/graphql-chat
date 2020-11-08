@@ -49,6 +49,7 @@ Learning GraphQL in public. I personally think that I enjoyed writing GraphQL in
 - [Stripe] This is a [complete guide](https://stripe.com/docs/billing/subscriptions/
 fixed-price#provision-access) on how to build a billing subscription using Stripe.
 - [Stripe] [This guide](https://stripe.com/docs/billing/subscriptions/overview#integration-example) explains the lifecycle of subscription in Stripe.
+- Loading Stripe JS and lottie JS can increase First Contentful Paint time (really bad experience) measured in Lighthouse. Defer them in `nuxt.config.js` to improve the first contentful paint time.
 
 ### Hasura
 

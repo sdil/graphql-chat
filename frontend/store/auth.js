@@ -29,15 +29,15 @@ export const mutations = {
 export const actions = {
     async nuxtServerInit({ dispatch }, ctx) {
         commit('SET_LOADING', true)
-        if (this.$fireAuth === null) {
+        if (this.$fire.auth=== null) {
             throw 'nuxtServerInit Example not working - this.$fireAuth cannot be accessed.'
         }
 
-        if (ctx.$fireAuth === null) {
+        if (ctx.$fire.auth === null) {
             throw 'nuxtServerInit Example not working - ctx.$fireAuth cannot be accessed.'
         }
 
-        if (ctx.app.$fireAuth === null) {
+        if (ctx.app.$fire.auth === null) {
             throw 'nuxtServerInit Example not working - ctx.$fireAuth cannot be accessed.'
         }
 
@@ -78,10 +78,10 @@ export const actions = {
     async fetchUser({ commit, dispatch }) {
 
         try {
-            var authUser = this.$fireAuth.currentUser
+            var authUser = this.$fire.auth.currentUser
             var token
             var expires
-            await this.$fireAuth.currentUser.getIdTokenResult(true)
+            await this.$fire.auth.currentUser.getIdTokenResult(true)
                 .then(function (result) {
                     token = result.token;
                     expires = ((Date.parse(result.expirationTime)) - Math.floor(new Date().getTime())) / 1000
@@ -113,7 +113,7 @@ export const actions = {
     },
 
     checkVuexStore(ctx) {
-        if (this.$fireAuth === null) {
+        if (this.$fire.auth=== null) {
             throw 'Vuex Store example not working - this.$fireAuth cannot be accessed.'
         }
 

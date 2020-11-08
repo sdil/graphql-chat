@@ -133,6 +133,7 @@
             <label class="block text-sm text-gray-600" for="cus_name"
               >Card</label
             >
+
             <card
               ref="card-stripe"
               stripe="pk_test_51HdoRrAWdm4F9r8C48eCqf3H5ggmnaNM8dLapbRdbgoJ9HpLyksUbGQPrLZF9KJ9gGPuVI2OBChNkteup4BNLRRC005OO5RElL"
@@ -160,11 +161,11 @@
 </template>
 
 <script>
-import { Card, createPaymentMethod } from "vue-stripe-elements-plus";
+import { StripeElement, createPaymentMethod } from "vue-stripe-elements-plus";
 
 export default {
   components: {
-    Card,
+    StripeElement,
   },
 
   data() {
@@ -189,7 +190,7 @@ export default {
       // Attach the PaymentMethod ID to the User in Stripe (by invoking API Server)
 
       this.loading = true;
-      createPaymentMethod('card').then((result) => {
+      createPaymentMethod("card").then((result) => {
         console.log(result);
         this.loading = false;
 
@@ -197,8 +198,11 @@ export default {
           console.log(result.error);
           this.$toast.error("Payment failed. Please try again");
           setTimeout(() => (this.error = ""), 3000);
-        }  else {
-          this.$axios.post("/subscribe", {payment_method_id: result.paymentMethod.id, plan: this.plan});
+        } else {
+          this.$axios.post("/subscribe", {
+            payment_method_id: result.paymentMethod.id,
+            plan: this.plan,
+          });
           this.$toast.success("Payment succeed");
           // payment succeeded! show a success message
           // there's always a chance your customer closes the browser after the payment process and before this code runs so

@@ -49,17 +49,16 @@
 
 <script>
 // Minimal Firebase package import
-import firebase from "firebase/app";
 
 export default {
   methods: {
     async googleLogin(user) {
-      var provider = new firebase.auth.GoogleAuthProvider();
+      var provider = new this.$fireModule.auth.GoogleAuthProvider();
       provider.addScope("profile");
       provider.addScope("email");
 
       try {
-        await this.$fireAuth.signInWithPopup(provider);
+        await this.$fire.auth.signInWithPopup(provider);
 
         // Get the current user idToken
         await this.$store.dispatch("auth/fetchUser");
@@ -73,7 +72,7 @@ export default {
       this.$router.go();
     },
     async logout() {
-      this.$fireAuth.signOut();
+      this.$fire.auth.signOut();
       await this.$apolloHelpers.onLogout();
       this.$toast.success("Successfully logged out");
     },
